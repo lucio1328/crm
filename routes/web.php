@@ -227,6 +227,11 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/', 'AbsenceController@store')->name('absence.store');
         Route::delete('/{absence}', 'AbsenceController@destroy')->name('absence.destroy');
     });
+
+    /**
+     * Reinitialiser
+     */
+    Route::get('/reinitialiser', 'ResetController@reinitialiser')->name('reinitialiser');
 });
 
 Route::group(['middleware' => ['auth']], function () {
