@@ -18,10 +18,10 @@ class ResetController extends Controller
     {
         $result = $this->reset->resetTables();
 
-        if ($result['success']) {
-            return response()->json(['message' => $result['message']], 200);
-        }
-
-        return response()->json(['message' => $result['message']], 500);
+        return redirect()->route('dashboard')->with([
+            'message' => $result['message'],
+            'success' => $result['success']
+        ]);
     }
+
 }

@@ -232,6 +232,14 @@ Route::group(['middleware' => ['auth']], function () {
      * Reinitialiser
      */
     Route::get('/reinitialiser', 'ResetController@reinitialiser')->name('reinitialiser');
+
+    /**
+     * Import
+     */
+    Route::group(['prefix' => 'import'], function () {
+        Route::get('/import.index', 'ImportController@index')->name('import.index');
+        Route::post('/import.store', 'ImportController@store')->name('import.store');
+    });
 });
 
 Route::group(['middleware' => ['auth']], function () {
