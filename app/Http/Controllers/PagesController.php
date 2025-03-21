@@ -20,27 +20,31 @@ class PagesController extends Controller
      */
     public function dashboard()
     {
-        $today = today();
-        $startDate = today()->subdays(14);
-        $period = CarbonPeriod::create($startDate, $today);
-        $datasheet = [];
+        $startDate = today()->subDays(14);
+        $endDate = today()->endOfDay();
 
-        // Iterate over the period
+        $tasks = Task::whereBetween('created_at', [$startDate, $endDate])->get();
+        $leads = Lead::whereBetween('created_at', [$startDate, $endDate])->get();
+
+        $datasheet = [];
+        $period = CarbonPeriod::create($startDate, $endDate);
         foreach ($period as $date) {
-            $datasheet[$date->format(carbonDate())] = [];
-            $datasheet[$date->format(carbonDate())]["monthly"] = [];
-            $datasheet[$date->format(carbonDate())]["monthly"]["tasks"] = 0;
-            $datasheet[$date->format(carbonDate())]["monthly"]["leads"] = 0;
+            $dateKey = $date->format('Y-m-d');
+            $datasheet[$dateKey] = ["monthly" => ["tasks" => 0, "leads" => 0]];
         }
 
-        $tasks = Task::whereBetween('created_at', [$startDate, now()])->get();
-        $leads = Lead::whereBetween('created_at', [$startDate, now()])->get();
         foreach ($tasks as $task) {
-            $datasheet[$task->created_at->format(carbonDate())]["monthly"]["tasks"]++;
+            $dateKey = $task->created_at->format('Y-m-d');
+            if (isset($datasheet[$dateKey])) {
+                $datasheet[$dateKey]["monthly"]["tasks"]++;
+            }
         }
 
         foreach ($leads as $lead) {
-            $datasheet[$lead->created_at->format(carbonDate())]["monthly"]["leads"]++;
+            $dateKey = $lead->created_at->format('Y-m-d');
+            if (isset($datasheet[$dateKey])) {
+                $datasheet[$dateKey]["monthly"]["leads"]++;
+            }
         }
         if (!auth()->user()->can('absence-view')) {
             $absences = [];
