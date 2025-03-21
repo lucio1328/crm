@@ -231,7 +231,7 @@ Route::group(['middleware' => ['auth']], function () {
     /**
      * Reinitialiser
      */
-    Route::get('/reinitialiser', 'ReinitialiserController@reinitialiser')->name('reinitialiser');
+    Route::get('/reinitialiser', 'ResetController@reinitialiser')->name('reinitialiser');
 });
 
 Route::group(['middleware' => ['auth']], function () {
