@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Services\Import;
+use Illuminate\Support\Facades\Session;
+use App\Services\Import\ImportService;
 
 class ImportController extends Controller
 {
@@ -22,14 +23,19 @@ class ImportController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'csv_file' => 'required|mimes:csv,txt|max:10048',
-        ]);
+        if ($request->hasFile('csv_file') && $request->file('csv_file')->isValid()) {
+            $file = $request->file('csv_file');
+            $filePath = $file->storeAs('csv', 'data.csv', 'local');
 
-        $file = $request->file('csv_file');
-        $path = $file->store('uploads', 'public');
+            $result = $this->import->importFromCsv(storage_path("app/csv/data.csv"));
 
-        return redirect()->route('import.index')->with('success', 'Fichier importé avec succès !');
+            Session::flash('success', 'Importation réussie');
+            Session::flash('import_message', $result);
+        } else {
+            Session::flash('error', 'Erreur lors de l\'importation du fichier CSV.');
+        }
+
+        return redirect()->route('import.index');
     }
 }
 
