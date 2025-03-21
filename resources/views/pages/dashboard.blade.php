@@ -82,7 +82,11 @@
                 <strong>Info!</strong> Data on the demo environment is reset every 24hr.
             </div>
         @endif
-
+        @if(session('message'))
+            <div class="alert {{ session('success') ? 'alert-success' : 'alert-danger' }}">
+                {{ session('message') }}
+            </div>
+        @endif
         <div class="row">
             <div class="col-lg-3 col-xs-6">
                 <!-- small box -->

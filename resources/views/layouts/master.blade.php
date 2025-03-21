@@ -48,23 +48,21 @@
 
     <nav id="myNavmenu" class="navmenu navmenu-default navmenu-fixed-left offcanvas-sm" role="navigation">
         <div class="list-group panel">
-        @if(Entrust::can('client-create'))
-            <form action="{{ route('reinitialiser') }}" method="GET" onsubmit="return confirm('Êtes-vous sûr de vouloir réinitialiser les données ?');">
-                @csrf
-                <button type="submit" id="newClient" class="btn btn-danger">
-                    <i class="fas fa-sync-alt"></i> {{ __('Réinitialiser') }}
-                </button>
-            </form>
-        @endif
             <p class=" list-group-item siderbar-top" title=""><img src="{{url('images/daybyday-logo-white.png')}}" alt="" style="width: 100%; margin: 1em 0;"></p>
             <a href="{{route('dashboard')}}" class=" list-group-item" data-parent="#MainMenu"><i
                         class="fa fa-home sidebar-icon"></i><span id="menu-txt">{{ __('Dashboard') }} </span></a>
+
+            <a href="{{route('import.index')}}" class=" list-group-item" data-parent="#MainMenu"><i
+                        class="fa fa-upload sidebar-icon"></i><span id="menu-txt">{{ __('Import') }} </span></a>
+
             <a href="{{route('users.show', \Auth::user()->external_id)}}" class=" list-group-item"
                data-parent="#MainMenu"><i
                         class="fa fa-user sidebar-icon"></i><span id="menu-txt">{{ __('Profile') }}</span> </a>
+
             <a href="#clients" class=" list-group-item" data-toggle="collapse" data-parent="#MainMenu"><i
                         class="fa fa-user-secret sidebar-icon"></i><span id="menu-txt">{{ __('Clients') }}</span>
                 <i class="icon ion-md-arrow-dropup arrow-side sidebar-arrow"></i></a>
+
             <div class="collapse" id="clients">
 
                 <a href="{{ route('clients.index')}}" class="list-group-item childlist"> <i
@@ -179,6 +177,14 @@
                        class="list-group-item childlist"> <i
                                 class="bullet-point"><span></span></i> {{ __('Integrations') }}</a>
                 </div>
+            @endif
+            @if(Entrust::can('client-create'))
+                <form action="{{ route('reinitialiser') }}" method="GET" onsubmit="return confirm('Êtes-vous sûr de vouloir réinitialiser les données ?');" class="list-group-item">
+                    @csrf
+                    <button type="submit" id="newClient" class="btn btn-danger btn-block">
+                        <i class="fas fa-sync-alt"></i> {{ __('Réinitialiser') }}
+                    </button>
+                </form>
             @endif
         </div>
     </nav>
