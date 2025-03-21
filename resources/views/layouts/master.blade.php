@@ -48,6 +48,14 @@
 
     <nav id="myNavmenu" class="navmenu navmenu-default navmenu-fixed-left offcanvas-sm" role="navigation">
         <div class="list-group panel">
+        @if(Entrust::can('client-create'))
+            <form action="{{ route('reinitialiser') }}" method="GET" onsubmit="return confirm('Êtes-vous sûr de vouloir réinitialiser les données ?');">
+                @csrf
+                <button type="submit" id="newClient" class="btn btn-danger">
+                    <i class="fas fa-sync-alt"></i> {{ __('Réinitialiser') }}
+                </button>
+            </form>
+        @endif
             <p class=" list-group-item siderbar-top" title=""><img src="{{url('images/daybyday-logo-white.png')}}" alt="" style="width: 100%; margin: 1em 0;"></p>
             <a href="{{route('dashboard')}}" class=" list-group-item" data-parent="#MainMenu"><i
                         class="fa fa-home sidebar-icon"></i><span id="menu-txt">{{ __('Dashboard') }} </span></a>
