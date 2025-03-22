@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
+use App\Services\Invoice\InvoiceCalculator;
 
 class PaymentsController extends Controller
 {
@@ -54,6 +55,22 @@ class PaymentsController extends Controller
             return redirect()->route('invoices.show', $invoice->external_id);
         }
 
+        // Vérification du montant avant d'enregistrer le paiement
+        $invoiceCalculator = new InvoiceCalculator($invoice);
+        $amountDue = $invoiceCalculator->getAmountDue()->getBigDecimalAmount();
+
+        if ($request->amount > $amountDue) {
+            session()->flash('error_message', __(
+                "Le montant du paiement (:amount) dépasse le solde restant à payer (:due). Veuillez ajuster le montant.",
+                [
+                    'amount' => number_format($request->amount, 2, ',', ' '),
+                    'due' => number_format($amountDue, 2, ',', ' ')
+                ]
+            ));
+            return redirect()->back();
+        }
+
+        // Création du paiement
         $payment = Payment::create([
             'external_id' => Uuid::uuid4()->toString(),
             'amount' => $request->amount * 100,
@@ -62,6 +79,7 @@ class PaymentsController extends Controller
             'description' => $request->description,
             'invoice_id' => $invoice->id
         ]);
+
         $api = Integration::initBillingIntegration();
         if ($api && $invoice->integration_invoice_id) {
             $result = $api->createPayment($payment);
@@ -69,6 +87,7 @@ class PaymentsController extends Controller
             $payment->integration_type = get_class($api);
             $payment->save();
         }
+
         app(GenerateInvoiceStatus::class, ['invoice' => $invoice])->createStatus();
 
         session()->flash('flash_message', __('Payment successfully added'));

@@ -188,7 +188,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/add-payment/{invoice}', 'PaymentsController@addPayment')->name('payment.add');
     });
 
-    /** 
+    /**
      * Offers
      */
     Route::group(['prefix' => 'offer'], function () {
