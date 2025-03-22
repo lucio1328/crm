@@ -36,6 +36,7 @@
         </script>
     <?php } ?>
     <script src="https://js.stripe.com/v3/"></script>
+    @yield('css')
     @stack('style')
 </head>
 <body>

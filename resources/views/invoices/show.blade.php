@@ -1,7 +1,14 @@
 @extends('layouts.master')
-
 @section('content')
     <div class="row">
+    @if (session('error_message'))
+    <div class="error-message">
+        <strong>Erreur :</strong>
+        <span>{{ session('error_message') }}</span>
+        <button type="button" class="close-btn" onclick="this.parentElement.style.display='none'">&times;</button>
+    </div>
+@endif
+
         <div class="col-md-7">
             <div class="tablet">
                 <div class="tablet__head">
@@ -268,6 +275,35 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('css')
+    <style>
+        .error-message {
+            display: flex;
+            align-items: center;
+            background-color: #f8d7da;
+            border: 1px solid #f5c2c7;
+            color: #842029;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            max-width: 100%;
+        }
+
+        .error-message strong {
+            margin-right: 8px;
+        }
+
+        .error-message .close-btn {
+            margin-left: auto;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #842029;
+        }
+    </style>
 @endsection
 
 @push('scripts')
