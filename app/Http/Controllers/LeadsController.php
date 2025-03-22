@@ -94,7 +94,7 @@ class LeadsController extends Controller
                 'client_id' => $client->id
             ]
         );
-        
+
         event(new \App\Events\LeadAction($lead, self::CREATED));
         session()->flash('flash_message', __('Lead successfully added'));
         return redirect()->route('leads.show', $lead->external_id);
