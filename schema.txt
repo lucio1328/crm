@@ -1,0 +1,3 @@
+clients ----< offers ----< invoices ----< invoice_lines
+                    |
+                  payments
