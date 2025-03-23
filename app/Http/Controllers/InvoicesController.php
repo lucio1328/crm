@@ -16,6 +16,7 @@ use App\Models\Payment;
 use App\Models\Setting;
 use App\Models\Integration;
 use App\Models\InvoiceLine;
+use App\Models\Configuration;
 use App\Enums\InvoiceStatus;
 use App\Enums\OfferStatus;
 use App\Enums\PaymentSource;
@@ -117,6 +118,12 @@ class InvoicesController extends Controller
             return redirect()->route('invoices.show', $external_id);
         }
 
+        $applyDiscount = $request->has('applyDiscount') && $request->applyDiscount == 1;
+        if ($applyDiscount) {
+            $discountPercentage = Configuration::getRemiseGlobale();
+            $invoice->remise = $discountPercentage;
+        }
+
         $result = $invoice->invoice($request->invoiceContact);
         if ($request->sendMail && $request->invoiceContact) {
             $attachPdf = $request->attachPdf ? true : false;
@@ -127,6 +134,7 @@ class InvoicesController extends Controller
         $invoice->status  =  InvoiceStatus::unpaid()->getStatus();
         $invoice->due_at  =  $result["due_at"];
         $invoice->invoice_number = app(InvoiceNumberService::class)->setInvoiceNumber($result["invoice_number"]);
+
         $invoice->save();
 
         return redirect()->back();

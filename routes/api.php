@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\DefaultController;
 use App\Http\Controllers\Api\PaiementController;
 use App\Http\Controllers\Api\StatistiqueController;
 use App\Http\Controllers\Api\DetailsController;
+use App\Http\Controllers\Api\ConfigurationController;
 use Illuminate\Http\Request;
 
 /*
@@ -38,5 +39,7 @@ Route::get('/details/paiements', [DetailsController::class, 'paiements']);
 
 Route::delete('/paiement/delete/{id}', [PaiementController::class, 'destroy'])->middleware('auth:api');
 Route::put('/paiement/update/{id}', [PaiementController::class, 'update'])->middleware('auth:api');
+
+Route::post('/configuration', [ConfigurationController::class, 'insert'])->middleware('auth:api');
 
 Route::get('/default', [DefaultController::class, 'index']);

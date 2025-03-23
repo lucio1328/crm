@@ -5,6 +5,7 @@ use App\Models\Offer;
 use App\Models\Invoice;
 use App\Repositories\Tax\Tax;
 use App\Repositories\Money\Money;
+use App\Models\Configuration;
 
 class InvoiceCalculator
 {
@@ -16,6 +17,10 @@ class InvoiceCalculator
      * @var Tax
      */
     private $tax;
+    /**
+     * @var float
+     */
+    private $discount;
 
     public function __construct($invoice)
     {
@@ -24,6 +29,8 @@ class InvoiceCalculator
         }
         $this->tax = new Tax();
         $this->invoice = $invoice;
+
+        $this->discount = $invoice->remise ?? 0;
     }
 
     public function getVatTotal()
@@ -41,6 +48,7 @@ class InvoiceCalculator
         foreach ($invoiceLines as $invoiceLine) {
             $price += $invoiceLine->quantity * $invoiceLine->price;
         }
+        $price = $price - ($price * $this->discount);
 
         return new Money($price);
     }
@@ -53,6 +61,8 @@ class InvoiceCalculator
         foreach ($invoiceLines as $invoiceLine) {
             $price += $invoiceLine->quantity * $invoiceLine->price;
         }
+        $price = $price - ($price * $this->discount);
+
         return new Money($price / $this->tax->multipleVatRate());
     }
 
