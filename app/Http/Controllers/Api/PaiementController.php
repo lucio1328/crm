@@ -34,9 +34,48 @@ class PaiementController extends Controller
         return response()->json(['message' => 'Paiement supprimé avec succès'], 200);
     }
 
-    public function update($id): JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
+        $request->validate([
+            'amount' => 'required|numeric|min:0',
+        ]);
 
+        $payment = Payment::find($id);
+
+        if (!$payment) {
+            return response()->json(['message' => 'Paiement introuvable'], 404);
+        }
+
+        if (!auth()->user()->can('payment-update')) {
+            return response()->json(['message' => "Vous n'avez pas la permission de modifier ce paiement"], 403);
+        }
+
+        $invoice = Invoice::find($payment->invoice_id);
+
+        if (!$invoice) {
+            return response()->json(['message' => 'Facture introuvable'], 404);
+        }
+
+        $invoiceCalculator = new InvoiceCalculator($invoice);
+
+        $totalPaid = Payment::where('invoice_id', $invoice->id)
+                        ->where('id', '!=', $id)
+                        ->whereNull('deleted_at')
+                        ->sum('amount');
+
+        $invoiceTotal = $invoiceCalculator->getTotalPrice();
+        $newAmount = $request->input('amount');
+
+        if (($totalPaid + $newAmount) > $invoiceTotal) {
+            return response()->json([
+                'message' => "Le montant total des paiements dépasse le montant à payer de la facture."
+            ], 400);
+        }
+
+        $payment->amount = $newAmount;
+        $payment->save();
+
+        return response()->json(['message' => 'Paiement mis à jour avec succès'], 200);
     }
 
 }

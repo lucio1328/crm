@@ -37,6 +37,6 @@ Route::get('/details/factures', [DetailsController::class, 'factures']);
 Route::get('/details/paiements', [DetailsController::class, 'paiements']);
 
 Route::delete('/paiement/delete/{id}', [PaiementController::class, 'destroy'])->middleware('auth:api');
-Route::patch('/paiement/update/{id}', [PaiementController::class, 'update'])->middleware('auth:api');
+Route::put('/paiement/update/{id}', [PaiementController::class, 'update'])->middleware('auth:api');
 
 Route::get('/default', [DefaultController::class, 'index']);
