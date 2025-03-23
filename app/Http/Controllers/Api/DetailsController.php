@@ -72,7 +72,7 @@ class DetailsController extends Controller
                 'external_id' => $offer->external_id,
                 'client' => $offer->client ? $offer->client->company_name : 'N/A',
                 'status' => $offer->status,
-                'created_at' => $offer->created_at ? $offer->created_at->format('d, F Y') : '',
+                'created_at' => $offer->created_at ? $offer->created_at : '',
                 'price' => $offer->invoiceLines->sum(function ($line) {
                     return ($line->price * $line->quantity) / 100;
                 })
