@@ -39,54 +39,56 @@ class PaiementController extends Controller
 
     public function update(Request $request, $id): JsonResponse
     {
-        $request->validate([
-            'amount' => 'required|numeric|min:0',
-        ]);
+        try {
+            $request->validate([
+                'amount' => 'required|numeric|min:0',
+            ]);
 
-        $payment = Payment::find($id);
+            $payment = Payment::find($id);
 
-        if (!$payment) {
-            return response()->json(['message' => 'Paiement introuvable'], 404);
+            if (!$payment) {
+                return response()->json(['error' => 'Paiement introuvable'], 404);
+            }
+
+            $invoice = Invoice::find($payment->invoice_id);
+
+            if (!$invoice) {
+                return response()->json(['error' => 'Facture introuvable'], 404);
+            }
+
+            if (!$invoice->isSent()) {
+                return response()->json([
+                    'error' => "Impossible de modifier un paiement sur une facture non envoyée."
+                ], 400);
+            }
+
+            $totalPaid = Payment::where('invoice_id', $invoice->id)
+                            ->where('id', '!=', $id)
+                            ->whereNull('deleted_at')
+                            ->sum('amount');
+
+            $invoiceCalculator = new InvoiceCalculator($invoice);
+            $invoiceTotal = $invoiceCalculator->getTotalPrice()->getAmount();
+
+            $newAmount = $request->input('amount') * 100;
+
+            if (($totalPaid + $newAmount) > $invoiceTotal) {
+                return response()->json([
+                    'error' => sprintf(
+                        "Le montant du paiement (%.2f) depasse le solde restant a payer.",
+                        $newAmount / 100
+                    )
+                ], 400);
+            }
+
+            $payment->amount = $newAmount;
+            $payment->save();
+
+            return response()->json(['message' => 'Paiement mis à jour avec succès'], 200);
         }
-
-        $invoice = Invoice::find($payment->invoice_id);
-
-        if (!$invoice) {
-            return response()->json(['message' => 'Facture introuvable'], 404);
+        catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        if (!$invoice->isSent()) {
-            return response()->json([
-                'message' => "Impossible de modifier un paiement sur une facture non envoyée."
-            ], 400);
-        }
-
-        $totalPaid = Payment::where('invoice_id', $invoice->id)
-                        ->where('id', '!=', $id)
-                        ->whereNull('deleted_at')
-                        ->sum('amount');
-
-        $invoiceCalculator = new InvoiceCalculator($invoice);
-        $invoiceTotal = $invoiceCalculator->getTotalPrice()->getAmount();
-
-        $oldAmount = $payment->amount;
-
-        $newAmount = $request->input('amount') * 100;
-
-        if (($totalPaid + $newAmount) > $invoiceTotal) {
-            return response()->json([
-                'message' => sprintf(
-                    "Le montant du paiement (%.2f) dépasse le solde restant à payer. Veuillez ajuster le montant.",
-                    $newAmount / 100,
-                    ($invoiceTotal - $totalPaid) / 100
-                )
-            ], 400);
-        }
-
-        $payment->amount = $newAmount;
-        $payment->save();
-
-        return response()->json(['message' => 'Paiement mis à jour avec succès'], 200);
     }
 
 }
