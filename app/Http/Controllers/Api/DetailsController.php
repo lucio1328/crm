@@ -74,7 +74,7 @@ class DetailsController extends Controller
                 'status' => $offer->status,
                 'created_at' => $offer->created_at ? $offer->created_at->format('d, F Y') : '',
                 'price' => $offer->invoiceLines->sum(function ($line) {
-                    return $line->price * $line->quantity;
+                    return ($line->price * $line->quantity) / 100;
                 })
             ];
         });
