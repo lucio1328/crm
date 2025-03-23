@@ -1,0 +1,12 @@
+php artisan make:migration create_configurations_table
+---
+php artisan migrate
+
+
+php artisan make:migration add_remise_to_invoices --table=invoices
+---
+php artisan migrate
+
+
+php artisan make:model Configuration
+

@@ -255,6 +255,13 @@
 
                     <textarea name="message" id="" rows="13" class="form-control">@lang("Dear :name\n\nThank you, for being a customer at :company\n\nHere is you Invoice on :price\n\nClick the link below to download the invoice\n\n[link-to-pdf]\n\nRegards\n---\n:company", ["name" => $invoice->client->primaryContact->name, "company" => $companyName, "price" => $finalPrice])</textarea>
                 </div>
+                <div class="form-group">
+                    <label for="applyDiscount">
+                        <input type="hidden" name="applyDiscount" value="0">
+                        <input type="checkbox" name="applyDiscount" id="applyDiscount" value="1">
+                        @lang('Appliquer remise')
+                    </label>
+                </div>
                 <input type="submit" value="{{__('Send invoice')}}" class="btn btn-md btn-brand btn-full-width closebtn" id="close-invoice">
             {!! Form::close() !!}
             </div>
