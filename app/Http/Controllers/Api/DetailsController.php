@@ -10,6 +10,9 @@ use App\Models\Task;
 use App\Models\Offer;
 use App\Models\Invoice;
 use App\Models\Payment;
+use App\Services\Invoice\InvoiceCalculator;
+use \App\Enums\InvoiceStatus;
+use App\Repositories\Money\MoneyConverter;
 
 class DetailsController extends Controller
 {
@@ -83,7 +86,38 @@ class DetailsController extends Controller
 
     public function factures(): JsonResponse
     {
-        return response()->json(Invoice::all());
+        $invoices = Invoice::with(['invoiceLines', 'source', 'offer', 'client'])
+            ->get()
+            ->map(function ($invoice) {
+                $invoiceCalculator = new InvoiceCalculator($invoice);
+                $amountDue = $invoiceCalculator->getAmountDue();
+
+                return [
+                    'client' => [
+                        'company_name' => optional($invoice->client)->company_name ?? 'N/A',
+                        'external_id' => optional($invoice->client)->external_id,
+                    ],
+                    'contact_info' => [
+                        'name' => optional($invoice->client->primary_contact)->name ?? 'N/A',
+                        'email' => optional($invoice->client->primary_contact)->email ?? 'N/A',
+                    ],
+                    'created_at' => optional($invoice->created_at)->format('d/m/Y'),
+                    'sent_at' => optional($invoice->sent_at)->format('d/m/Y') ?? __('Not sent'),
+                    'due_at' => optional($invoice->due_at)->format('d/m/Y'),
+                    'amount_due' => app(MoneyConverter::class, ['money' => $amountDue])->format(),
+                    'status' => InvoiceStatus::fromStatus($invoice->status)->getDisplayValue(),
+                    'invoice_number' => $invoice->invoice_number,
+                    'source' => $invoice->source ? [
+                        'reference' => class_basename(get_class($invoice->source)),
+                        'url' => $invoice->source->getShowRoute(),
+                    ] : null,
+                    'offer' => $invoice->offer ? [
+                        'external_id' => $invoice->offer->external_id
+                    ] : null
+                ];
+            });
+
+        return response()->json($invoices);
     }
 
     public function paiements(): JsonResponse
