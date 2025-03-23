@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DefaultController;
 use App\Http\Controllers\Api\StatistiqueController;
+use App\Http\Controllers\Api\DetailsController;
 use Illuminate\Http\Request;
 
 /*
@@ -26,4 +27,12 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 
 Route::get('/statistiques', [StatistiqueController::class, 'index'])->middleware('auth:api');
+
+Route::get('/details/clients', [DetailsController::class, 'clients']);
+Route::get('/details/projets', [DetailsController::class, 'projets']);
+Route::get('/details/taches', [DetailsController::class, 'taches']);
+Route::get('/details/offres', [DetailsController::class, 'offres']);
+Route::get('/details/factures', [DetailsController::class, 'factures']);
+Route::get('/details/paiements', [DetailsController::class, 'paiements']);
+
 Route::get('/default', [DefaultController::class, 'index']);
