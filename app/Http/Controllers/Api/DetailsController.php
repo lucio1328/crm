@@ -42,7 +42,7 @@ class DetailsController extends Controller
 
     public function taches(): JsonResponse
     {
-        $tasks = Task::with(['assignee', 'status', 'project'])
+        $tasks = Task::with(['user', 'status', 'project'])
             ->get()
             ->map(function ($task) {
                 return [
