@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use App\Models\Payment;
 use App\Models\Integration;
+use App\Models\Invoice;
+use Illuminate\Http\Request;
+use App\Services\Invoice\InvoiceCalculator;
 
 class PaiementController extends Controller
 {
@@ -46,29 +49,37 @@ class PaiementController extends Controller
             return response()->json(['message' => 'Paiement introuvable'], 404);
         }
 
-        if (!auth()->user()->can('payment-update')) {
-            return response()->json(['message' => "Vous n'avez pas la permission de modifier ce paiement"], 403);
-        }
-
         $invoice = Invoice::find($payment->invoice_id);
 
         if (!$invoice) {
             return response()->json(['message' => 'Facture introuvable'], 404);
         }
 
-        $invoiceCalculator = new InvoiceCalculator($invoice);
+        if (!$invoice->isSent()) {
+            return response()->json([
+                'message' => "Impossible de modifier un paiement sur une facture non envoyée."
+            ], 400);
+        }
 
         $totalPaid = Payment::where('invoice_id', $invoice->id)
                         ->where('id', '!=', $id)
                         ->whereNull('deleted_at')
                         ->sum('amount');
 
-        $invoiceTotal = $invoiceCalculator->getTotalPrice();
-        $newAmount = $request->input('amount');
+        $invoiceCalculator = new InvoiceCalculator($invoice);
+        $invoiceTotal = $invoiceCalculator->getTotalPrice()->getAmount();
+
+        $oldAmount = $payment->amount;
+
+        $newAmount = $request->input('amount') * 100;
 
         if (($totalPaid + $newAmount) > $invoiceTotal) {
             return response()->json([
-                'message' => "Le montant total des paiements dépasse le montant à payer de la facture."
+                'message' => sprintf(
+                    "Le montant du paiement (%.2f) dépasse le solde restant à payer. Veuillez ajuster le montant.",
+                    $newAmount / 100,
+                    ($invoiceTotal - $totalPaid) / 100
+                )
             ], 400);
         }
 
