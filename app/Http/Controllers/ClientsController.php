@@ -63,7 +63,7 @@ class ClientsController extends Controller
     public function anyData()
     {
         $clients = Client::select(['external_id', 'company_name', 'vat', 'address']);
-        return Datatables::of($clients)       
+        return Datatables::of($clients)
             ->addColumn('namelink', '<a href="{{ route("clients.show",[$external_id]) }}">{{$company_name}}</a>')
             ->addColumn('view', '
                 <a href="{{ route(\'clients.show\', $external_id) }}" class="btn btn-link" >'  . __('View') . '</a>')
