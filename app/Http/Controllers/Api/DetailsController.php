@@ -64,7 +64,21 @@ class DetailsController extends Controller
 
     public function offres(): JsonResponse
     {
-        return response()->json(Offer::all());
+        $offers = Offer::with(['client:id,company_name', 'invoiceLines'])
+        ->get()
+        ->map(function ($offer) {
+            return [
+                'id' => $offer->id,
+                'external_id' => $offer->external_id,
+                'client' => $offer->client ? $offer->client->company_name : 'N/A',
+                'status' => $offer->status,
+                'created_at' => $offer->created_at ? $offer->created_at->format('d, F Y') : '',
+                'price' => $offer->invoiceLines->sum(function ($line) {
+                    return $line->price * $line->quantity;
+                })
+            ];
+        });
+        return response()->json($offers);
     }
 
     public function factures(): JsonResponse
