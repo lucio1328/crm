@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use App\Models\Payment;
 use App\Models\Integration;
+use App\Models\Configuration;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
 use App\Services\Invoice\InvoiceCalculator;
