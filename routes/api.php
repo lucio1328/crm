@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DefaultController;
+use App\Http\Controllers\Api\StatistiqueController;
 use Illuminate\Http\Request;
 
 /*
@@ -24,5 +25,5 @@ Route::group(['namespace' => 'App\Api\v1\Controllers'], function () {
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 
-
+Route::get('/statistiques', [StatistiqueController::class, 'index'])->middleware('auth:api');
 Route::get('/default', [DefaultController::class, 'index']);
