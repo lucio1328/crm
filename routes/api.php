@@ -40,6 +40,6 @@ Route::get('/details/paiements', [DetailsController::class, 'paiements']);
 Route::delete('/paiement/delete/{id}', [PaiementController::class, 'destroy'])->middleware('auth:api');
 Route::put('/paiement/update/{id}', [PaiementController::class, 'update'])->middleware('auth:api');
 
-Route::post('/configuration', [ConfigurationController::class, 'insert'])->middleware('auth:api');
+Route::post('/configuration', [ConfigurationController::class, 'insert']);
 
 Route::get('/default', [DefaultController::class, 'index']);

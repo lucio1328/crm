@@ -59,7 +59,7 @@ class InvoicesController extends Controller
             session()->flash('flash_message_warning', __('You do not have permission to view this invoice'));
             return redirect()->route('clients.index');
         }
-        
+
         $apiConnected = false;
         $invoiceContacts = [];
         $primaryContact = null;
