@@ -9,7 +9,7 @@ class Configuration extends Model
 
     public static function getRemiseGlobale()
     {
-        $config = self::first();
+        $config = self::latest()->first();
         return $config ? $config->remise_globale : 0;
     }
 

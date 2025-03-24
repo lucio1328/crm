@@ -79,21 +79,25 @@ class InvoicesController extends Controller
 
         $invoiceCalculator = new InvoiceCalculator($invoice);
         $totalPrice = $invoiceCalculator->getTotalPrice();
+        $totalPriceInitial = $invoiceCalculator->getTotalPriceInitial();
         $subPrice = $invoiceCalculator->getSubTotal();
         $vatPrice = $invoiceCalculator->getVatTotal();
         $amountDue = $invoiceCalculator->getAmountDue();
-        
+        $remise = $invoice->remise;
+
         return view('invoices.show')
             ->withInvoice($invoice)
             ->withApiconnected($apiConnected)
             ->withContacts($invoiceContacts)
             ->withfinalPrice(app(MoneyConverter::class, ['money' => $totalPrice])->format())
+            ->withfinalPriceInitial(app(MoneyConverter::class, ['money' => $totalPriceInitial])->format())
             ->withsubPrice(app(MoneyConverter::class, ['money' => $subPrice])->format())
             ->withVatPrice(app(MoneyConverter::class, ['money' => $vatPrice])->format())
             ->withAmountDueFormatted(app(MoneyConverter::class, ['money' => $amountDue])->format())
             ->withPrimaryContact(optional($primaryContact)[0])
             ->withPaymentSources(PaymentSource::values())
             ->withAmountDue($amountDue)
+            ->withRemise($remise)
             ->withSource($invoice->source)
             ->withCompanyName(Setting::first()->company);
     }
