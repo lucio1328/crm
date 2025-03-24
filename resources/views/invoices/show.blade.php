@@ -91,10 +91,32 @@
                                     </div>
                                 </div>
                             </div>
+                        <!-- Remise--->
+                            <div class="tablet__item" style="padding: 0;">
+                                <div class="tablet__item__info">
+                                    <span class="remise">@lang('Remise')</span>
+                                </div>
+                                <div class="tablet__item__toolbar">
+                                    <div class="dropdown dropdown-inline">
+                                        <span class="remise">{{$remise * 100}} %</span>
+                                    </div>
+                                </div>
+                            </div>
+                        <!-- Total price initial--->
+                            <div class="tablet__item" style="padding: 0;">
+                                <div class="tablet__item__info">
+                                    <span class="final-price-initial">@lang('Total Initial')</span>
+                                </div>
+                                <div class="tablet__item__toolbar">
+                                    <div class="dropdown dropdown-inline">
+                                        <span class="final-price-initial">{{$finalPriceInitial}}</span>
+                                    </div>
+                                </div>
+                            </div>
                         <!-- Total price--->
                             <div class="tablet__item" style="padding: 0;">
                                 <div class="tablet__item__info">
-                                    <span class="final-price">@lang('Total')</span>
+                                    <span class="final-price">@lang('Total avec remise')</span>
                                 </div>
                                 <div class="tablet__item__toolbar">
                                     <div class="dropdown dropdown-inline">

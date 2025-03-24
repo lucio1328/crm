@@ -39,6 +39,17 @@ class InvoiceCalculator
         return new Money($price * $this->tax->vatRate());
     }
 
+    public function getTotalPriceInitial(): Money
+    {
+        $price = 0;
+        $invoiceLines = $this->invoice->invoiceLines;
+
+        foreach ($invoiceLines as $invoiceLine) {
+            $price += $invoiceLine->quantity * $invoiceLine->price;
+        }
+
+        return new Money($price);
+    }
 
     public function getTotalPrice(): Money
     {
