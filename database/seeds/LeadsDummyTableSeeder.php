@@ -13,7 +13,7 @@ class LeadsDummyTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(Lead::class, 20)->create()->each(function ($l) {
+        factory(Lead::class,1)->create()->each(function ($l) {
             if(rand(0, 5) == 1) {
                 factory(App\Models\Comment::class, 3)->create([
                     'source_type' => Lead::class,
