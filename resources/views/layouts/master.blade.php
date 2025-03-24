@@ -56,6 +56,13 @@
             <a href="{{route('import.index')}}" class=" list-group-item" data-parent="#MainMenu"><i
                         class="fa fa-upload sidebar-icon"></i><span id="menu-txt">{{ __('Import') }} </span></a>
 
+            @if(Entrust::hasRole('administrator') || Entrust::hasRole('owner'))
+                <a href="{{ route('generate.index') }}" class="list-group-item" data-bs-toggle="collapse" data-bs-parent="#MainMenu">
+                    <i class="fa fa-fa-database  sidebar-icon"></i>
+                    <span id="menu-txt">{{ __('Generer donnee') }}</span>
+                </a>
+            @endif
+
             <a href="{{route('users.show', \Auth::user()->external_id)}}" class=" list-group-item"
                data-parent="#MainMenu"><i
                         class="fa fa-user sidebar-icon"></i><span id="menu-txt">{{ __('Profile') }}</span> </a>
