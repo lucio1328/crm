@@ -240,6 +240,11 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/import.index', 'ImportController@index')->name('import.index');
         Route::post('/import.store', 'ImportController@store')->name('import.store');
     });
+
+    Route::prefix('generate')->name('generate.')->group(function () {
+        Route::get('/', 'GenerateData@index')->name('index');
+        Route::post('/generate', 'GenerateData@generate')->name('generate');
+    });
 });
 
 Route::group(['middleware' => ['auth']], function () {

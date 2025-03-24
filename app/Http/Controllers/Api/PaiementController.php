@@ -10,6 +10,7 @@ use App\Models\Configuration;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
 use App\Services\Invoice\InvoiceCalculator;
+use App\Services\Invoice\GenerateInvoiceStatus;
 
 class PaiementController extends Controller
 {
@@ -84,6 +85,8 @@ class PaiementController extends Controller
 
             $payment->amount = $newAmount;
             $payment->save();
+
+            app(GenerateInvoiceStatus::class, ['invoice' => $invoice])->createStatus();
 
             return response()->json(['message' => 'Paiement mis à jour avec succès'], 200);
         }
