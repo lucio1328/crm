@@ -11,9 +11,33 @@ use App\Models\Invoice;
 use Illuminate\Http\Request;
 use App\Services\Invoice\InvoiceCalculator;
 use App\Services\Invoice\GenerateInvoiceStatus;
+use Carbon\Carbon;
 
 class PaiementController extends Controller
 {
+    public function monthlyRevenueChart()
+    {
+        $currentDate = Carbon::now();
+
+        $revenueData = [];
+        for ($i = 0; $i < 12; $i++) {
+            $monthStart = $currentDate->copy()->startOfMonth()->toDateString();
+            $monthEnd = $currentDate->copy()->endOfMonth()->toDateString();
+
+            $monthKey =$currentDate->copy()->startOfMonth()->format('F Y');
+
+            $revenue = Payment::whereBetween('payment_date', [$monthStart, $monthEnd])
+                            ->sum('amount')/100;
+
+            $revenueData[$monthKey] = intval($revenue);
+
+            $currentDate->subMonth();
+        }
+
+        $revenueData = array_reverse($revenueData);
+        return response()->json($revenueData);
+    }
+
     public function destroy($id): JsonResponse
     {
         $payment = Payment::find($id);

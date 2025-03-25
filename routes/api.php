@@ -40,6 +40,14 @@ Route::get('/details/paiements', [DetailsController::class, 'paiements']);
 Route::delete('/paiement/delete/{id}', [PaiementController::class, 'destroy'])->middleware('auth:api');
 Route::put('/paiement/update/{id}', [PaiementController::class, 'update'])->middleware('auth:api');
 
+Route::prefix('payments')->group(function () {
+    Route::get('/chart', [PaiementController::class,'monthlyRevenueChart']);
+});
+
 Route::post('/configuration', [ConfigurationController::class, 'insert']);
+
+Route::prefix('projects')->group(function () {
+    Route::get('/chart', [ProjetController::class, 'getProjectCountByStatus']);
+});
 
 Route::get('/default', [DefaultController::class, 'index']);
