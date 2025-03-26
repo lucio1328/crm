@@ -51,7 +51,7 @@ class OffersController extends Controller
             'source_type' => Lead::class,
             'status' => OfferStatus::inProgress()->getStatus()
         ]);
-        
+
         foreach ($request->all() as $line) {
             if(!$line["title"] || !$line["type"] || !$line["price"] || !$line["quantity"]) {
                 return response("missing fields", 422);
@@ -69,7 +69,7 @@ class OffersController extends Controller
         }
 
         return response("OK");
-        
+
     }
 
     public function won(Request $request)

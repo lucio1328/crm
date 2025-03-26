@@ -14,7 +14,7 @@ class Reset
 
             $tables = [
                 'mails', 'comments', 'absences', 'leads', 'projects', 'tasks',
-                'contacts', 'industries', 'appointments', 'clients', 'offers',
+                'contacts', 'appointments', 'clients', 'offers',
                 'invoices', 'invoice_lines', 'payments'
             ];
 
