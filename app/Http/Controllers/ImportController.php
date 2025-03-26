@@ -58,13 +58,11 @@ class ImportController extends Controller
         // Démarrer une transaction pour toutes les opérations
         $this->importService->clearAllTempData();
         $allErrors = [];
-        $hasErrors = false;
         $results = [];
 
         // Importer les projets
         $projectImportResult = $this->importService->importProjects($request->file('file'));
         if ($projectImportResult['error']) {
-            $hasErrors = true;
             $this->addFileSourceToErrors($projectImportResult['errors'], $fileNames['file']);
             $allErrors = array_merge($allErrors, $projectImportResult['errors']);
         } else {
@@ -72,34 +70,28 @@ class ImportController extends Controller
             $results['imported_projects_rows'] = $projectImportResult['imported_rows'];
         }
 
-        // Importer les tâches seulement si pas d'erreur précédente
-        if (!$hasErrors) {
-            $taskImportResult = $this->importService->importProjectTasks($request->file('file2'));
-            if ($taskImportResult['error']) {
-                $hasErrors = true;
-                $this->addFileSourceToErrors($taskImportResult['errors'], $fileNames['file2']);
-                $allErrors = array_merge($allErrors, $taskImportResult['errors']);
-            } else {
-                $results['project_tasks'] = $taskImportResult['data'];
-                $results['imported_project_tasks_rows'] = $taskImportResult['imported_rows'];
-            }
+        // Importer les tâches
+        $taskImportResult = $this->importService->importProjectTasks($request->file('file2'));
+        if ($taskImportResult['error']) {
+            $this->addFileSourceToErrors($taskImportResult['errors'], $fileNames['file2']);
+            $allErrors = array_merge($allErrors, $taskImportResult['errors']);
+        } else {
+            $results['project_tasks'] = $taskImportResult['data'];
+            $results['imported_project_tasks_rows'] = $taskImportResult['imported_rows'];
         }
 
-        // Importer les offres seulement si pas d'erreur précédente
-        if (!$hasErrors) {
-            $offerImportResult = $this->importService->importOffers($request->file('file3'));
-            if ($offerImportResult['error']) {
-                $hasErrors = true;
-                $this->addFileSourceToErrors($offerImportResult['errors'], $fileNames['file3']);
-                $allErrors = array_merge($allErrors, $offerImportResult['errors']);
-            } else {
-                $results['offers'] = $offerImportResult['data'];
-                $results['imported_offers_rows'] = $offerImportResult['imported_rows'];
-            }
+        // Importer les offres
+        $offerImportResult = $this->importService->importOffers($request->file('file3'));
+        if ($offerImportResult['error']) {
+            $this->addFileSourceToErrors($offerImportResult['errors'], $fileNames['file3']);
+            $allErrors = array_merge($allErrors, $offerImportResult['errors']);
+        } else {
+            $results['offers'] = $offerImportResult['data'];
+            $results['imported_offers_rows'] = $offerImportResult['imported_rows'];
         }
 
         // Si erreurs, tout supprimer
-        if ($hasErrors) {
+        if (!empty($allErrors)) {
             $this->importService->clearAllTempData();
             return back()->with([
                 'error' => 'Des erreurs sont survenues lors de l\'importation',
@@ -115,13 +107,19 @@ class ImportController extends Controller
         $this->repartitionSevice->repartitionTempProjectTask();
         $this->repartitionSevice->repartitionTempOffer();
 
-
         return back()->with(array_merge([
             'success' => 'Importation réussie',
             'file_name' => $fileNames['file'],
             'file_name2' => $fileNames['file2'],
             'file_name3' => $fileNames['file3']
         ], $results));
+    }
+
+    private function addFileSourceToErrors(&$errors, $fileName)
+    {
+        foreach ($errors as &$error) {
+            $error['source_file'] = $fileName;
+        }
     }
 }
 
