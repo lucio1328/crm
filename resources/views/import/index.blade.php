@@ -12,15 +12,15 @@
                     <form action="{{ route('import.upload') }}" method="POST" enctype="multipart/form-data" class="p-3 border rounded bg-light">
                         @csrf
                         <div class="form-group">
-                            <label for="file" class="h5"><i class="fas fa-file-csv"></i> Fichier CSV 1</label>
+                            <label for="file" class="h5"><i class="fas fa-file-csv"></i> Fichier CSV 1 (Projets)</label>
                             <input type="file" class="form-control @error('file') is-invalid @enderror" id="file" name="file" required>
-
-                            <label for="file2" class="h5 mt-3"><i class="fas fa-file-csv"></i> Fichier CSV 2</label>
+                            
+                            <label for="file2" class="h5 mt-3"><i class="fas fa-file-csv"></i> Fichier CSV 2 (Tâches)</label>
                             <input type="file" class="form-control @error('file2') is-invalid @enderror" id="file2" name="file2" required>
-
-                            <label for="file3" class="h5 mt-3"><i class="fas fa-file-csv"></i> Fichier CSV 3</label>
+                            
+                            <label for="file3" class="h5 mt-3"><i class="fas fa-file-csv"></i> Fichier CSV 3 (Offres)</label>
                             <input type="file" class="form-control @error('file3') is-invalid @enderror" id="file3" name="file3" required>
-
+                            
                             @error('file')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -141,7 +141,7 @@
                                         @endforeach
                                     </tbody>
                                 </table>
-                                <div id="paginationProjects" class="pagination" style="display: flex;justify-content: center;margin-top: 20px;"></div>
+                                <div id="paginationProjects" class="pagination"></div>
                             </div>
                         </div>
                     @endif
@@ -320,232 +320,46 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 <style>
-<style>
-    /* Couleurs de base */
-    :root {
-        --primary-color: #68f5d1;
-        --secondary-color: #8e89ec;
-        --success-color: #33fb4e;
-        --danger-color: #f72533;
-        --light-color: #f8f9fa;
-        --dark-color: #212529;
-    }
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
 
-    /* Pagination */
-    .pagination {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-    }
+.pagination-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 5px;
+}
 
-    .pagination-list {
-        list-style: none;
-        padding: 0;
-        display: flex;
-        gap: 5px;
-    }
+.page-item {
+    padding: 5px 10px;
+    border: 1px solid #007bff;
+    color: #007bff;
+    cursor: pointer;
+    border-radius: 5px;
+    min-width: 35px;
+    text-align: center;
+}
 
-    .page-item {
-        padding: 8px 14px;
-        border-radius: 50%;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        background-color: white;
-        color: var(--primary-color);
-        border: 1px solid #e0e0e0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+.page-item:hover:not(.disabled) {
+    background-color: #007bff;
+    color: white;
+}
 
-    .page-item:hover:not(.disabled),
-    .page-item.active {
-        background-color: var(--primary-color);
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border-color: var(--primary-color);
-    }
+.page-item.active {
+    background-color: #007bff;
+    color: white;
+}
 
-    .page-item.disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        background-color: #f5f5f5;
-    }
+.page-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 
-    /* Tables */
-    .table-responsive {
-        margin-bottom: 30px;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        border: 1px solid #e2e8f0;
-    }
-
-    .table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        background-color: white;
-        font-size: 0.9rem;
-    }
-
-    .table th {
-        background-color: var(--primary-color);
-        color: white;
-        font-weight: 600;
-        padding: 15px;
-        text-align: left;
-        position: sticky;
-        top: 0;
-    }
-
-    .table td {
-        padding: 12px 15px;
-        border-bottom: 1px solid #edf2f7;
-        vertical-align: middle;
-    }
-
-    .table tr:last-child td {
-        border-bottom: none;
-    }
-
-    .table tr:nth-child(even) {
-        background-color: #f8fafc;
-    }
-
-    .table tr:hover {
-        background-color: #f1f5f9;
-    }
-
-    /* Card */
-    .card {
-        border-radius: 16px;
-        overflow: hidden;
-        border: none;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    }
-
-    .card-header {
-        border-radius: 0;
-        font-size: 1.4rem;
-        font-weight: 700;
-        padding: 20px;
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        border-bottom: none;
-    }
-
-    .card-body {
-        padding: 30px;
-        background-color: #f9fafb;
-    }
-
-    /* Boutons */
-    .btn-primary {
-        background-color: var(--primary-color);
-        border: none;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        padding: 12px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        font-size: 0.9rem;
-        border-radius: 8px;
-    }
-
-    .btn-primary:hover {
-        background-color: var(--secondary-color);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Formulaires */
-    .form-control {
-        border-radius: 8px;
-        padding: 12px 15px;
-        border: 1px solid #e2e8f0;
-        transition: all 0.3s ease;
-    }
-
-    .form-control:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-    }
-
-    .form-group label {
-        font-weight: 600;
-        color: var(--dark-color);
-        margin-bottom: 8px;
-    }
-
-    /* Alertes */
-    .alert {
-        border-radius: 10px;
-        border: none;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        padding: 20px;
-    }
-
-    .alert-success {
-        background-color: #f0fdf4;
-        color: #166534;
-        border-left: 4px solid #22c55e;
-    }
-
-    .alert-danger {
-        background-color: #fef2f2;
-        color: #991b1b;
-        border-left: 4px solid #ef4444;
-    }
-
-    /* Badges */
-    .badge {
-        padding: 8px 12px;
-        border-radius: 50px;
-        font-weight: 600;
-        font-size: 0.8rem;
-    }
-
-    .badge-success {
-        background-color: #dcfce7;
-        color: #166534;
-    }
-
-    .badge-danger {
-        background-color: #fee2e2;
-        color: #991b1b;
-    }
-
-    /* Icônes */
-    .fas {
-        margin-right: 8px;
-    }
-
-    /* En-têtes */
-    h3, h4, h5 {
-        font-weight: 700;
-        color: var(--dark-color);
-    }
-
-    /* Effets globaux */
-    body {
-        background-color: #f1f5f9;
-    }
-
-    .rounded {
-        border-radius: 12px !important;
-    }
-
-    /* Animation de chargement */
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .card, .table-responsive, .alert {
-        animation: fadeIn 0.5s ease-out forwards;
-    }
-</style>
+.table-responsive {
+    margin-bottom: 20px;
+}
 </style>
 @endsection

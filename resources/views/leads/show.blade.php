@@ -46,7 +46,7 @@
                                         <button class="btn btn-info edit-offer-btn" data-offer-external_id="{{$offer->getInvoice()->external_id}}"><span class="fa fa-pencil"></span></button>
                                     @endif
                                 @endif
-                      
+
                                 @if($offer->getInvoice()->invoice)
                                 <button class="btn view-offer-btn" data-offer-external_id="{{$offer->getInvoice()->external_id}}"><span class="fa fa-eye"></span></button>
                                 <a href="{{route('invoices.show', $offer->getInvoice()->invoice->external_id)}}">

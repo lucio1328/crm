@@ -1,0 +1,5 @@
+composer require maatwebsite/excel
+
+migration table temporaire
+
+creation modele table temporaire
