@@ -168,6 +168,7 @@ class OffersImport implements
             'prix' => [
                 'required',
                 'numeric',
+                'min:0',
                 function ($attribute, $value, $fail) {
                     $prix = $this->convertToNumeric($value);
                     if ($prix === false) {
@@ -178,6 +179,7 @@ class OffersImport implements
             'quantite' => [
                 'required',
                 'integer',
+                'min:0',
                 function ($attribute, $value, $fail) {
                     $quantite = $this->convertToInteger($value);
                     if ($quantite === false) {
