@@ -2,105 +2,95 @@
 
 namespace App\Services\Import;
 
-use App\Models\Absence;
-use App\Models\Activity;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
+use App\Imports\OffersImport;
+use App\Imports\ProjectsImport;
+use App\Imports\ProjectTasksImport;
+use App\Models\TempOffer;
+use App\Models\TempProject;
+use App\Models\TempProjectTask;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 
 class ImportService
 {
-    public static function importFromCsv($filePath) {
-        DB::beginTransaction();
+    public function importProjects($file)
+    {
+        $importProject = new ProjectsImport;
 
         try {
-            $data = array_map('str_getcsv', file($filePath));
+            $result = Excel::import($importProject, $file);
 
-            $data = array_filter($data, function ($row) {
-                return array_filter($row);
-            });
-
-            $groupedData = [];
-            $currentTable = null;
-            $headers = [];
-
-            foreach ($data as $row) {
-                if (empty(array_filter($row))) {
-                    continue;
-                }
-
-                if (strtolower(trim($row[0])) == 'table_name') {
-                    $currentTable = strtolower(trim($row[1]));
-                    $headers = [];
-                    continue;
-                }
-
-                if (empty($headers)) {
-                    $headers = array_map('trim', $row);
-                    continue;
-                }
-
-                $rowData = array_combine($headers, $row);
-
-                if (!isset($groupedData[$currentTable])) {
-                    $groupedData[$currentTable] = [];
-                }
-                $groupedData[$currentTable][] = $rowData;
+            $errors = $this->handleImportErrors($importProject);
+            if (!empty($errors)) {
+                return ['error' => true, 'message' => 'Erreurs détectées dans le fichier projets', 'errors' => $errors];
             }
 
-            if (!empty($groupedData['absences'])) {
-                self::importAbsences($groupedData['absences']);
-            }
-
-            if (!empty($groupedData['activities'])) {
-                self::importActivities($groupedData['activities']);
-            }
-
-            DB::commit();
-
-            return "Importation terminée avec succès !";
-        }
-        catch (Exception $e) {
-            DB::rollBack();
-            return "Erreur lors de l'importation : " . $e->getMessage();
+            return ['error' => false, 'data' => TempProject::all(), 'imported_rows' => TempProject::count()];
+        } catch (Exception $e) {
+            Log::error('Erreur lors de l\'importation des projets: ' . $e->getMessage());
+            return ['error' => true, 'message' => 'Erreur fatale lors de l\'import: ' . $e->getMessage()];
         }
     }
 
-    private static function importAbsences($data) {
-        foreach ($data as $row) {
-            $validator = Validator::make($row, [
-                'external_id' => 'required|string|unique:absences,external_id',
-                'reason'      => 'required|string|max:255',
-                'start_at'    => 'required|date|before_or_equal:end_at',
-                'end_at'      => 'required|date|after_or_equal:start_at',
-                'user_id'     => 'required|exists:users,id',
-                'comment'     => 'nullable|string|max:500',
-            ]);
+    public function importProjectTasks($file)
+    {
+        $importProjectTask = new ProjectTasksImport;
 
-            if ($validator->fails()) {
-                throw new Exception("Erreur de validation (Absences) : " . implode(', ', $validator->errors()->all()));
+        try {
+            $result = Excel::import($importProjectTask, $file);
+
+            $errors = $this->handleImportErrors($importProjectTask);
+            if (!empty($errors)) {
+                return ['error' => true, 'message' => 'Erreurs détectées dans le fichier tâches', 'errors' => $errors];
             }
 
-            Absence::create($row);
+            return ['error' => false, 'data' => TempProjectTask::all(), 'imported_rows' => TempProjectTask::count()];
+        } catch (Exception $e) {
+            Log::error('Erreur lors de l\'importation des tâches: ' . $e->getMessage());
+            return ['error' => true, 'message' => 'Erreur fatale lors de l\'import: ' . $e->getMessage()];
         }
     }
 
-    private static function importActivities($data) {
-        foreach ($data as $row) {
-            $validator = Validator::make($row, [
-                'causer_id'   => 'required|integer|exists:users,id',
-                'causer_type' => 'required|string',
-                'text'        => 'required|string|max:255',
-                'source_type' => 'required|string',
-                'source_id'   => 'required|integer',
-                'properties'  => 'nullable|json',
-            ]);
+    public function importOffers($file)
+    {
+        $importOffer = new OffersImport;
 
-            if ($validator->fails()) {
-                throw new Exception("Erreur de validation (Activities) : " . implode(', ', $validator->errors()->all()));
+        try {
+            $result = Excel::import($importOffer, $file);
+
+            $errors = $this->handleImportErrors($importOffer);
+            if (!empty($errors)) {
+                return ['error' => true, 'message' => 'Erreurs détectées dans le fichier offres', 'errors' => $errors];
             }
 
-            Activity::create($row);
+            return ['error' => false, 'data' => TempOffer::all(), 'imported_rows' => TempOffer::count()];
+        } catch (Exception $e) {
+            Log::error('Erreur lors de l\'importation des offres: ' . $e->getMessage());
+            return ['error' => true, 'message' => 'Erreur fatale lors de l\'import: ' . $e->getMessage()];
         }
+    }
+
+    private function handleImportErrors($importInstance)
+    {
+        $errors = [];
+        if ($importInstance->failures()->isNotEmpty()) {
+            foreach ($importInstance->failures() as $failure) {
+                $errors[] = [
+                    'row' => $failure->row(),
+                    'attribute' => $failure->attribute(),
+                    'errors' => $failure->errors(),
+                    'values' => $failure->values()
+                ];
+            }
+        }
+        return $errors;
+    }
+
+    public function clearAllTempData()
+    {
+        TempProjectTask::truncate();
+        TempProject::truncate();
+        TempOffer::truncate();
     }
 }

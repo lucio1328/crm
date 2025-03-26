@@ -239,6 +239,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::group(['prefix' => 'import'], function () {
         Route::get('/import.index', 'ImportController@index')->name('import.index');
         Route::post('/import.store', 'ImportController@store')->name('import.store');
+        Route::post('/upload', 'ImportController@import')->name('import.upload');
     });
 
     Route::prefix('generate')->name('generate.')->group(function () {
