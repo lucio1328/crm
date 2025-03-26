@@ -15,7 +15,7 @@ class Reset
             $tables = [
                 'mails', 'comments', 'absences', 'leads', 'projects', 'tasks',
                 'contacts', 'appointments', 'clients', 'offers',
-                'invoices', 'invoice_lines', 'payments'
+                'invoices', 'invoice_lines', 'payments', 'products'
             ];
 
             foreach ($tables as $table) {
