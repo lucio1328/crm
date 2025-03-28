@@ -11,14 +11,17 @@ use App\Models\Offer;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Services\Statistique\Statistique;
+use App\Services\Invoice\Util;
 
 class StatistiqueController extends Controller
 {
     protected $statistiqueService;
+    protected $invoiceService;
 
-    public function __construct(Statistique $statistiqueService)
+    public function __construct(Statistique $statistiqueService, Util $invoiceService)
     {
         $this->statistiqueService = $statistiqueService;
+        $this->invoiceService = $invoiceService;
     }
 
     public function index(): JsonResponse
@@ -31,6 +34,7 @@ class StatistiqueController extends Controller
             'factures' => Invoice::count(),
             'paiements' => Payment::count(),
             'revenus_mensuels' => $this->statistiqueService->getRevenu(),
+            'sommeInvoice' => $this->invoiceService->sommeInvoice(),
         ];
 
         return response()->json($data);

@@ -184,7 +184,7 @@ class InvoicesController extends Controller
 
         return redirect()->back();
     }
-    
+
     public function newItems($external_id, Request $request)
     {
         foreach($request->all() as $invoiceLine) {
@@ -192,7 +192,7 @@ class InvoicesController extends Controller
             $this->newItem($external_id, $invoiceLine);
         }
     }
-    
+
     public function findByExternalId($external_id)
     {
         return Invoice::whereExternalId($external_id)->first();
@@ -235,14 +235,13 @@ class InvoicesController extends Controller
         $formats = array_merge($formats, $currency->toArray());
         $formats['vatPercentage'] = app(Tax::class)->multipleVatRate();
         $formats['vatRate'] = app(Tax::class)->vatRate();
-        
+
         return $formats;
     }
 
     public function overdue()
     {
         $invoices = Invoice::pastDueAt()->get();
-        
         return view('invoices.overdue')->withInvoices($invoices);
     }
 }

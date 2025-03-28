@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DefaultController;
 use App\Http\Controllers\Api\PaiementController;
 use App\Http\Controllers\Api\StatistiqueController;
+use App\Http\Controllers\Api\InvoiceApiController;
 use App\Http\Controllers\Api\DetailsController;
 use App\Http\Controllers\Api\ConfigurationController;
 use Illuminate\Http\Request;
@@ -36,6 +37,8 @@ Route::get('/details/taches', [DetailsController::class, 'taches']);
 Route::get('/details/offres', [DetailsController::class, 'offres']);
 Route::get('/details/factures', [DetailsController::class, 'factures']);
 Route::get('/details/paiements', [DetailsController::class, 'paiements']);
+
+Route::get('/invoice/somme', [InvoiceApiController::class, 'sommeInvoices']);
 
 Route::delete('/paiement/delete/{id}', [PaiementController::class, 'destroy'])->middleware('auth:api');
 Route::put('/paiement/update/{id}', [PaiementController::class, 'update'])->middleware('auth:api');

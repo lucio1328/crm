@@ -56,6 +56,11 @@ class ClientsController extends Controller
         return view('clients.index');
     }
 
+    public function duplicate($external_id)
+    {
+
+    }
+
     /**
      * Make json respnse for datatables
      * @return mixed
@@ -65,6 +70,8 @@ class ClientsController extends Controller
         $clients = Client::select(['external_id', 'company_name', 'vat', 'address']);
         return Datatables::of($clients)
             ->addColumn('namelink', '<a href="{{ route("clients.show",[$external_id]) }}">{{$company_name}}</a>')
+            ->addColumn('duplicate', '
+                <a href="{{ route(\'clients.duplicate\', $external_id) }}" class="btn btn-link" >'  . __('Duplicate') . '</a>')
             ->addColumn('view', '
                 <a href="{{ route(\'clients.show\', $external_id) }}" class="btn btn-link" >'  . __('View') . '</a>')
             ->addColumn('edit', '
@@ -75,7 +82,7 @@ class ClientsController extends Controller
             <input type="submit" name="submit" value="' . __('Delete') . '" class="btn btn-link" onClick="return confirm(\'Are you sure? All the clients tasks, leads, projects, etc will be deleted as well\')"">
             {{csrf_field()}}
             </form>')
-            ->rawColumns(['namelink', 'view','edit', 'delete'])
+            ->rawColumns(['namelink', 'duplicate', 'view','edit', 'delete'])
             ->make(true);
     }
 
