@@ -4,40 +4,40 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-10">
-            <div class="card shadow-lg rounded">
-                <div class="card-header bg-primary text-white text-center">
+            <div class="card shadow-lg rounded" style="border-radius: 16px; overflow: hidden; border: none; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                <div class="card-header bg-primary text-white text-center" style="border-radius: 0; font-size: 1.4rem; font-weight: 700; padding: 20px; background: linear-gradient(135deg, #68f5d1, #8e89ec); border-bottom: none;">
                     <h3><i class="fas fa-file-import"></i> Importer des données</h3>
                 </div>
-                <div class="card-body">
-                    <form action="{{ route('import.upload') }}" method="POST" enctype="multipart/form-data" class="p-3 border rounded bg-light">
+                <div class="card-body" style="padding: 30px; background-color: #f9fafb;">
+                    <form action="{{ route('import.upload') }}" method="POST" enctype="multipart/form-data" class="p-3 border rounded bg-light" style="border-radius: 8px; padding: 12px 15px; border: 1px solid #e2e8f0;">
                         @csrf
                         <div class="form-group">
-                            <label for="file" class="h5"><i class="fas fa-file-csv"></i> Fichier CSV 1</label>
-                            <input type="file" class="form-control @error('file') is-invalid @enderror" id="file" name="file" required>
-
-                            <label for="file2" class="h5 mt-3"><i class="fas fa-file-csv"></i> Fichier CSV 2</label>
-                            <input type="file" class="form-control @error('file2') is-invalid @enderror" id="file2" name="file2" required>
-
-                            <label for="file3" class="h5 mt-3"><i class="fas fa-file-csv"></i> Fichier CSV 3</label>
-                            <input type="file" class="form-control @error('file3') is-invalid @enderror" id="file3" name="file3" required>
+                            <label for="file" class="h5" style="font-weight: 600; color: #212529; margin-bottom: 8px;"><i class="fas fa-file-csv"></i> Fichier CSV 1</label>
+                            <input type="file" class="form-control @error('file') is-invalid @enderror" id="file" name="file" required style="border-radius: 8px; padding: 12px 15px; border: 1px solid #e2e8f0;">
+                            
+                            <label for="file2" class="h5 mt-3" style="font-weight: 600; color: #212529; margin-bottom: 8px;"><i class="fas fa-file-csv"></i> Fichier CSV 2</label>
+                            <input type="file" class="form-control @error('file2') is-invalid @enderror" id="file2" name="file2" required style="border-radius: 8px; padding: 12px 15px; border: 1px solid #e2e8f0;">
+                            
+                            <label for="file3" class="h5 mt-3" style="font-weight: 600; color: #212529; margin-bottom: 8px;"><i class="fas fa-file-csv"></i> Fichier CSV 3</label>
+                            <input type="file" class="form-control @error('file3') is-invalid @enderror" id="file3" name="file3" required style="border-radius: 8px; padding: 12px 15px; border: 1px solid #e2e8f0;">
 
                             @error('file')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="invalid-feedback" style="color: #e74c3c;">{{ $message }}</div>
                             @enderror
                         </div>
-                        <button type="submit" class="btn btn-primary btn-lg w-100 mt-3">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mt-3" style="background-color: #68f5d1; border: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 12px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; font-size: 0.9rem; border-radius: 8px;">
                             <i class="fas fa-upload"></i> Importer
                         </button>
                     </form>
 
                     @if(session('success') || session('error'))
-                        <div class="alert alert-{{ session('success') ? 'success' : 'danger' }} mt-4">
+                        <div class="alert alert-{{ session('success') ? 'success' : 'danger' }} mt-4" style="border-radius: 10px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); padding: 20px;">
                             @if(session('success'))
-                                <h5 class="font-weight-bold text-center">
+                                <h5 class="font-weight-bold text-center" style="font-weight: 700; font-size: 1.2rem;">
                                     <i class="fas fa-check-circle"></i> Importation réussie
                                 </h5>
                             @else
-                                <h5 class="font-weight-bold text-center">
+                                <h5 class="font-weight-bold text-center" style="font-weight: 700; font-size: 1.2rem;">
                                     <i class="fas fa-exclamation-circle"></i> Erreur lors de l'importation
                                 </h5>
                             @endif
@@ -52,17 +52,17 @@
                             @if(session('success'))
                                 <div class="text-center mt-3">
                                     @if(session('imported_projects_rows'))
-                                        <span class="badge badge-success mr-2">
+                                        <span class="badge badge-success mr-2" style="background-color: #33fb4e; color: white; padding: 5px 10px; border-radius: 8px;">
                                             Projets: {{ session('imported_projects_rows') }} lignes
                                         </span>
                                     @endif
                                     @if(session('imported_project_tasks_rows'))
-                                        <span class="badge badge-success mr-2">
+                                        <span class="badge badge-success mr-2" style="background-color: #33fb4e; color: white; padding: 5px 10px; border-radius: 8px;">
                                             Tâches: {{ session('imported_project_tasks_rows') }} lignes
                                         </span>
                                     @endif
                                     @if(session('imported_offers_rows'))
-                                        <span class="badge badge-success">
+                                        <span class="badge badge-success" style="background-color: #33fb4e; color: white; padding: 5px 10px; border-radius: 8px;">
                                             Offres: {{ session('imported_offers_rows') }} lignes
                                         </span>
                                     @endif
@@ -71,7 +71,7 @@
                             
                             @if(session('skipped_rows'))
                                 <div class="text-center mt-3">
-                                    <span class="badge badge-danger">
+                                    <span class="badge badge-danger" style="background-color: #f72533; color: white; padding: 5px 10px; border-radius: 8px;">
                                         Lignes en erreur: {{ session('skipped_rows') }}
                                     </span>
                                 </div>
@@ -81,12 +81,12 @@
 
                     @if(session('import_errors'))
                         <div class="mt-4">
-                            <h4 class="text-danger text-center">
+                            <h4 class="text-danger text-center" style="font-size: 1.4rem;">
                                 <i class="fas fa-exclamation-triangle"></i> Erreurs d'import
                             </h4>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover">
-                                    <thead class="thead-dark">
+                            <div class="table-responsive" style="margin-bottom: 30px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0;">
+                                <table class="table table-bordered table-hover" style="width: 100%; border-collapse: separate; border-spacing: 0; background-color: white; font-size: 0.9rem;">
+                                    <thead class="thead-dark" style="background-color: #212529; color: white;">
                                         <tr>
                                             <th>Fichier</th>
                                             <th>Ligne</th>
@@ -97,7 +97,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach(session('import_errors') as $error)
-                                            <tr class="table-danger">
+                                            <tr class="table-danger" style="background-color: #f8fafc;">
                                                 <td>{{ $error['source_file'] ?? 'N/A' }}</td>
                                                 <td>{{ $error['row']-1 }}</td>
                                                 <td>{{ $error['attribute'] }}</td>
@@ -119,95 +119,26 @@
 
                     @if(session('projects'))
                         <div class="mt-4">
-                            <h4 class="text-success text-center">
+                            <h4 class="text-success text-center" style="font-size: 1.4rem;">
                                 <i class="fas fa-check-circle"></i> Projets importés
                             </h4>
-                            <div class="table-responsive">
-                                <table id="tableProjects" class="table table-bordered table-striped">
-                                    <thead class="thead-light">
+                            <div class="table-responsive" style="margin-bottom: 30px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0;">
+                                <table class="table table-bordered table-hover" style="width: 100%; border-collapse: separate; border-spacing: 0; background-color: white; font-size: 0.9rem;">
+                                    <thead class="thead-light" style="background-color: #f1f1f1;">
                                         <tr>
-                                            <th>Ligne originale</th>
                                             <th>Nom du projet</th>
-                                            <th>Client</th>
+                                            <th>Statut</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach(session('projects') as $project)
                                             <tr>
-                                                <td>{{ $project->import_row }}</td>
-                                                <td>{{ $project->project_title }}</td>
-                                                <td>{{ $project->client_name }}</td>
+                                                <td>{{ $project['name'] }}</td>
+                                                <td>{{ $project['status'] }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
-                                <div id="paginationProjects" class="pagination" style="display: flex;justify-content: center;margin-top: 20px;"></div>
-                            </div>
-                        </div>
-                    @endif
-
-                    @if(session('project_tasks'))
-                        <div class="mt-4">
-                            <h4 class="text-success text-center">
-                                <i class="fas fa-check-circle"></i> Tâches importées
-                            </h4>
-                            <div class="table-responsive">
-                                <table id="tableProjectTasks" class="table table-bordered table-striped">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th>Ligne originale</th>
-                                            <th>Nom du projet</th>
-                                            <th>Titre de la tâche</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach(session('project_tasks') as $project_task)
-                                            <tr>
-                                                <td>{{ $project_task->import_row }}</td>
-                                                <td>{{ $project_task->project_title }}</td>
-                                                <td>{{ $project_task->task_title }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                <div id="paginationProjectTasks" class="pagination"></div>
-                            </div>
-                        </div>
-                    @endif
-
-                    @if(session('offers'))
-                        <div class="mt-4">
-                            <h4 class="text-success text-center">
-                                <i class="fas fa-check-circle"></i> Offres importées
-                            </h4>
-                            <div class="table-responsive">
-                                <table id="tableOffers" class="table table-bordered table-striped">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th>Ligne originale</th>
-                                            <th>Nom du client</th>
-                                            <th>Titre du lead</th>
-                                            <th>Type</th>
-                                            <th>Produit</th>
-                                            <th>Prix</th>
-                                            <th>Quantité</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach(session('offers') as $offer)
-                                            <tr>
-                                                <td>{{ $offer->import_row }}</td>
-                                                <td>{{ $offer->client_name }}</td>
-                                                <td>{{ $offer->lead_title }}</td>
-                                                <td>{{ $offer->type }}</td>
-                                                <td>{{ $offer->produit }}</td>
-                                                <td>{{ $offer->prix }}</td>
-                                                <td>{{ $offer->quantite }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                <div id="paginationOffers" class="pagination"></div>
                             </div>
                         </div>
                     @endif
@@ -217,6 +148,7 @@
     </div>
 </div>
 @endsection
+
 
 @section('scripts')
 <script>

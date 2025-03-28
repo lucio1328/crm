@@ -38,6 +38,24 @@ class Invoice extends Model
         'remise'
     ];
 
+    protected $appends = ['price'];
+
+    public function getPriceAttribute()
+    {
+        $invoiceCalculator = new InvoiceCalculator($this);
+        return $invoiceCalculator->getTotalPrice()->getBigDecimalAmount();
+    }
+
+    /**
+     * Mutateur pour l'attribut price (optionnel).
+     * Utile si vous voulez pouvoir "setter" la valeur manuellement.
+     */
+    public function setPriceAttribute($value)
+    {
+        // On stocke dans le tableau attributes pour que Laravel puisse y accéder
+        $this->attributes['price'] = $value;
+    }
+
     protected $dates = [
         'due_at',
     ];
