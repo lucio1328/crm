@@ -91,6 +91,7 @@ class DetailsController extends Controller
             ->map(function ($invoice) {
                 $invoiceCalculator = new InvoiceCalculator($invoice);
                 $amountDue = $invoiceCalculator->getAmountDue();
+                $total = $invoiceCalculator->getTotalPrice();
 
                 return [
                     'client' => [
@@ -105,6 +106,7 @@ class DetailsController extends Controller
                     'sent_at' => optional($invoice->sent_at)->format('d/m/Y') ?? __('Not sent'),
                     'due_at' => optional($invoice->due_at)->format('d/m/Y'),
                     'amount_due' => app(MoneyConverter::class, ['money' => $amountDue])->format(),
+                    'total' => app(MoneyConverter::class, ['money' => $total])->format(),
                     'status' => InvoiceStatus::fromStatus($invoice->status)->getDisplayValue(),
                     'invoice_number' => $invoice->invoice_number,
                     'source' => $invoice->source ? [

@@ -56,7 +56,9 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/upload/{external_id}', 'DocumentsController@upload')->name('document.upload');
         Route::patch('/updateassign/{external_id}', 'ClientsController@updateAssign');
         Route::post('/updateassign/{external_id}', 'ClientsController@updateAssign');
+        Route::get('/duplicate/{external_id}', 'ClientExportController@export')->name('clients.duplicate');
     });
+
     Route::resource('clients', 'ClientsController');
     Route::get('document/{external_id}', 'DocumentsController@view')->name('document.view');
     Route::get('document/download/{external_id}', 'DocumentsController@download')->name('document.download');
